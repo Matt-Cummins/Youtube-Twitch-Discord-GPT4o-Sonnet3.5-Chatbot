@@ -1,4 +1,4 @@
-# Import necessary modules
+import time
 import os
 import openai
 import logging
@@ -7,47 +7,101 @@ import nltk
 import aiohttp
 from nltk import word_tokenize, pos_tag, ne_chunk
 from nltk.tree import Tree
-import xml.etree.ElementTree as ET
 import asyncio
 import requests
 import pyaudio
 import numpy as np
 from whisper import transcribe
 
-# Set up logging
-logging.basicConfig(level=logging.INFO, format='[%(asctime)s] %(levelname)-8s %(name)-12s %(message)s')
+# Set up detailed logging
+logging.basicConfig(level=logging.DEBUG, format='[%(asctime)s] %(levelname)-8s %(name)-12s %(message)s')
 
-# Validate and set Twitch API credentials using environment variables
-TWITCH_CLIENT_ID = os.getenv('TWITCH_CLIENT_ID')
-TWITCH_CLIENT_SECRET = os.getenv('TWITCH_CLIENT_SECRET')
-if TWITCH_CLIENT_ID is None or TWITCH_CLIENT_SECRET is None:
-    raise ValueError("TWITCH_CLIENT_ID or TWITCH_CLIENT_SECRET environment variable is not set.")
+# Example of detailed logging in an API request function
+def make_api_request(url, params):
+    try:
+        logging.debug(f"Making API request to {url} with params {params}")
+        response = requests.get(url, params=params)
+        response.raise_for_status()  # Raises an HTTPError for bad responses
+        logging.debug(f"API response: {response.text}")
+        return response.json()
+    except requests.exceptions.RequestException as e:
+        logging.error(f"API request failed: {e}")
+        return None
 
-# Function to handle rate limits for Twitch API
-def handle_twitch_rate_limit(response):
-    if response.status_code == 429:
-        logging.error("Rate limit exceeded for Twitch API. Please try again later.")
-        return True
-    return False
+# Environment Variable Management
+class Config:
+    @staticmethod
+    def get_env_variable(name, default=None, required=False):
+        value = os.getenv(name, default)
+        if required and value is None:
+            raise ValueError(f"Environment variable {name} is required but not set.")
+        return value
 
-# Request body for Twitch API
-body = {
-    'client_id': TWITCH_CLIENT_ID,
-    'client_secret': TWITCH_CLIENT_SECRET,
-    'grant_type': 'client_credentials'
-}
+    @classmethod
+    def load_configuration(cls):
+        cls.TWITCH_CLIENT_ID = cls.get_env_variable('TWITCH_CLIENT_ID', required=True)
+        cls.TWITCH_CLIENT_SECRET = cls.get_env_variable('TWITCH_CLIENT_SECRET', required=True)
+        cls.OPENAI_ORG = cls.get_env_variable('OPENAI_ORG', required=True)
+        cls.OPENAI_KEY = cls.get_env_variable('OPENAI_KEY', required=True)
+        cls.GOOGLE_PSE_ID = cls.get_env_variable('GOOGLE_PSE_ID', required=True)
+        cls.GOOGLE_PSE_API_KEY = cls.get_env_variable('GOOGLE_PSE_API_KEY', required=True)
+        cls.TWITCH_BOT_NAME = cls.get_env_variable('TWITCH_BOT_NAME', 'defaultBotName')
+        cls.TWITCH_BOT_TOKEN = cls.get_env_variable('TWITCH_BOT_TOKEN', required=True)
+        cls.TWITCH_CHANNEL_NAME = cls.get_env_variable('TWITCH_CHANNEL_NAME', 'defaultChannelName')
+        cls.ACCESS_TOKEN = None
+        cls.TOKEN_EXPIRY = 0
 
-# Post request to Twitch API for access token
-try:
+# Load configuration
+Config.load_configuration()
+
+# Function to handle rate limits with retry for synchronous requests
+def handle_rate_limit_with_retry(request_func, params, max_retries=3, initial_wait=1):
+    retry_count = 0
+    while retry_count < max_retries:
+        response = request_func(params)
+        if response.status_code != 429:
+            return response
+        logging.error(f"Rate limit exceeded. Retry attempt {retry_count + 1} of {max_retries}.")
+        time.sleep(initial_wait * (2 ** retry_count))  # Corrected exponential backoff
+        retry_count += 1
+    logging.error("Max retries exceeded for rate limit handling.")
+    return None
+
+# Function to handle rate limits with retry for asynchronous requests
+async def handle_rate_limit_with_retry_async(request_func, params, max_retries=3, initial_wait=1):
+    retry_count = 0
+    while retry_count < max_retries:
+        response = await request_func(params)
+        if response.status != 429:
+            return response
+        logging.error(f"Rate limit exceeded. Retry attempt {retry_count + 1} of {max_retries}.")
+        await asyncio.sleep(initial_wait * (2 ** retry_count))  # Corrected exponential backoff
+        retry_count += 1
+    logging.error("Max retries exceeded for rate limit handling.")
+    return None
+
+# Function to get a new access token
+def get_access_token():
+    body = {
+        'client_id': Config.TWITCH_CLIENT_ID,
+        'client_secret': Config.TWITCH_CLIENT_SECRET,
+        'grant_type': 'client_credentials'
+    }
     response = requests.post('https://id.twitch.tv/oauth2/token', data=body)
-    if handle_twitch_rate_limit(response):
-        access_token = None
+    if response.status_code == 200:
+        data = response.json()
+        Config.ACCESS_TOKEN = data['access_token']  # Calculate the expiry time as current time + expires_in seconds
+        Config.TOKEN_EXPIRY = time.time() + data['expires_in']
     else:
-        response.raise_for_status()  # Raises an HTTPError if the HTTP request returned an unsuccessful status code
-        access_token = response.json().get('access_token')
-except requests.exceptions.RequestException as e:
-    logging.error(f"Failed to get access token: {e}")
-    access_token = None
+        logging.error("Failed to obtain access token")
+
+# Function to refresh the access token if it has expired
+def refresh_access_token_if_needed():
+    if time.time() >= Config.TOKEN_EXPIRY:
+        get_access_token()
+
+# Ensure get_access_token is called during initial setup
+get_access_token()
 
 # Function to ensure necessary NLTK modules are downloaded
 def setup_nltk():
@@ -69,13 +123,43 @@ def is_search_query(message):
     message = message.lower()
     return any(message.startswith(phrase) for phrase in search_phrases)
 
+# Set up PyAudio
+p = pyaudio.PyAudio()
+
+# Start a new stream
+stream = p.open(format=pyaudio.paInt16, channels=1, rate=44100, input=True, frames_per_buffer=1024)
+
+# Function to capture audio
+def capture_audio():
+    frames = []
+
+    # Capture audio for a certain duration (e.g., 5 seconds)
+    for i in range(0, int(44100 / 1024 * 5)):
+        data = stream.read(1024)
+        frames.append(np.frombuffer(data, dtype=np.int16))
+
+    # Stop and close the stream
+    stream.stop_stream()
+    stream.close()
+
+    # Terminate the PortAudio interface
+    p.terminate()
+
+    return np.concatenate(frames)
+
+# Function to transcribe audio
+def transcribe_audio(audio):
+    # Convert the numpy array to a list
+    audio_list = audio.tolist()
+
+    # Use the Whisper ASR system to transcribe the audio
+    transcription = transcribe(audio_list)
+
+    return transcription
+
 # Configure OpenAI using environment variables
-openai.organization = os.getenv('OPENAI_ORG')
-if openai.organization is None:
-    raise ValueError("OPENAI_ORG environment variable is not set.")
-openai.api_key = os.getenv('OPENAI_KEY')
-if openai.api_key is None:
-    raise ValueError("OPENAI_KEY environment variable is not set.")
+openai.organization = Config.OPENAI_ORG
+openai.api_key = Config.OPENAI_KEY
 
 # Global variables for bot configuration
 conversation_history = {}
@@ -106,20 +190,17 @@ def get_continuous_chunks(text):
 # Asynchronous function to perform web search with rate limit handling
 async def perform_web_search_async(query):
     base_url = "https://www.googleapis.com/customsearch/v1"
-    search_engine_id = os.getenv('GOOGLE_PSE_ID')
-    api_key = os.getenv('GOOGLE_PSE_API_KEY')
-    if search_engine_id is None or api_key is None:
-        raise ValueError("GOOGLE_PSE_ID or GOOGLE_PSE_API_KEY environment variable is not set.")
-    params = {"q": query, "cx": search_engine_id, "key": api_key}
+    params = {
+        'q': query,
+        'cx': Config.GOOGLE_PSE_ID,
+        'key': Config.GOOGLE_PSE_API_KEY
+    }
     async with aiohttp.ClientSession() as session:
-        async with session.get(base_url, params=params) as response:
-            if response.status == 429:
-                logging.error("Rate limit exceeded for Google Custom Search API. Please try again later.")
-                return None
-            elif response.status != 200:
-                logging.error(f"Web search error {response.status}: {await response.text()}")
-                return None
+        response = await handle_rate_limit_with_retry_async(session.get, {'url': base_url, 'params': params})
+        if response is not None and response.status == 200:
             return await response.json()
+        else:
+            return None
 
 # Function to format search results
 def format_search_results(results):
@@ -129,13 +210,11 @@ def format_search_results(results):
     return "\\n".join(snippets)
 
 # Twitch bot configuration
-twitch_bot_name = os.getenv('TWITCH_BOT_NAME', 'defaultBotName')
-twitch_bot_token = os.getenv('TWITCH_BOT_TOKEN')
-if twitch_bot_token is None:
-    raise ValueError("TWITCH_BOT_TOKEN environment variable is not set.")
-twitch_channel_name = os.getenv('TWITCH_CHANNEL_NAME', 'defaultChannelName')
-twitch_api_client_id = TWITCH_CLIENT_ID
-twitch_api_secret = TWITCH_CLIENT_SECRET
+twitch_bot_name = Config.TWITCH_BOT_NAME
+twitch_bot_token = Config.TWITCH_BOT_TOKEN
+twitch_channel_name = Config.TWITCH_CHANNEL_NAME
+twitch_api_client_id = Config.TWITCH_CLIENT_ID
+twitch_api_secret = Config.TWITCH_CLIENT_SECRET
 
 # Twitch bot class
 class TwitchBot(commands.Bot):
