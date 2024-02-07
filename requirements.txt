@@ -1,0 +1,6 @@
+openai # The OpenAI Python client library is updated regularly. You should use the latest version available on PyPI or follow the version recommended in the OpenAI documentation.
+twitchio # This is a library specifically for interacting with the Twitch API. The latest version can be found on PyPI.
+nltk # The Natural Language Toolkit (NLTK) is a widely used library for NLP tasks. The latest version is available on PyPI.
+aiohttp # This is an asynchronous HTTP client/server framework. The latest version is available on PyPI.
+pyaudio #  If audio functionalities are used. This library is used for audio I/O with Python and may not be updated frequently. The latest version can be found on PyPI.
+google-cloud-speech # If Google Cloud Speech-to-Text API is used. This is the client library for Google Cloud Speech-to-Text API. The latest version is available on PyPI.
