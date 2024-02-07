@@ -1,6 +1,17 @@
-openai # The OpenAI Python client library is updated regularly. You should use the latest version available on PyPI or follow the version recommended in the OpenAI documentation.
-twitchio # This is a library specifically for interacting with the Twitch API. The latest version can be found on PyPI.
-nltk # The Natural Language Toolkit (NLTK) is a widely used library for NLP tasks. The latest version is available on PyPI.
-aiohttp # This is an asynchronous HTTP client/server framework. The latest version is available on PyPI.
-pyaudio #  If audio functionalities are used. This library is used for audio I/O with Python and may not be updated frequently. The latest version can be found on PyPI.
-google-cloud-speech # If Google Cloud Speech-to-Text API is used. This is the client library for Google Cloud Speech-to-Text API. The latest version is available on PyPI.
+# The OpenAI Python client library, used for integrating with OpenAI's API for AI-related tasks. Install the latest version from PyPI.
+openai
+
+# This library is specifically for interacting with the Twitch API, enabling the creation of Twitch bots and other Twitch-related functionalities. Install the latest version from PyPI.
+twitchio
+
+# The Natural Language Toolkit (NLTK) is used for natural language processing tasks, such as text analysis, tokenization, and parsing. Install the latest version from PyPI.
+nltk
+
+# An asynchronous HTTP client/server framework in Python, useful for making non-blocking HTTP requests. Install the latest version from PyPI.
+aiohttp
+
+# PyAudio is used for audio input and output in Python, enabling the bot to capture and play audio. Note: Installing PyAudio on Windows might require additional steps. Install the latest version from PyPI.
+pyaudio
+
+# The client library for Google Cloud Speech-to-Text API, allowing for the conversion of audio to text via Google's cloud-based speech recognition technology. Install the latest version from PyPI.
+google-cloud-speech
