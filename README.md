@@ -1,7 +1,7 @@
 # twitchbot
 Twitch chatbot, gpt4 integration, designed for flight simulation streamers.
 
-The Python script you have is designed to perform a variety of tasks, including natural language processing, asynchronous web searches, fetching METAR data, and operating a Twitch bot. Here's a detailed description of its capabilities:
+The Python script is designed to perform a variety of tasks, including natural language processing, asynchronous web searches, fetching METAR data, and operating a Twitch bot. Here's a detailed description of its capabilities:
 Natural Language Processing (NLP)
 The script utilizes the OpenAI API to generate responses based on conversation history and initial prompts. This allows it to understand and process human language, making it suitable for applications that require interaction with users in natural language.
 Asynchronous Web Searches
