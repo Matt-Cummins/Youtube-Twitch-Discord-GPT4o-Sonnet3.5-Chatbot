@@ -9,7 +9,7 @@ The script utilizes the OpenAI API to generate responses based on conversation h
 
 Audio Processing and Transcription;
 
-With imports like pyaudio, numpy, and whisper, the script hints at capabilities for audio processing and transcription, to transcribe spoken words into text for processing or responding to audio inputs. However, the detailed implementation or usage of these functionalities isn't yet fully implemented.
+With imports like pyaudio, numpy, and whisper, the script hints at capabilities for audio processing and transcription, to transcribe spoken words into text for processing or responding to audio inputs. However, the detailed implementation/usage of these functionalities isn't yet fully set up.
 
 Asynchronous Web Searches;
 
