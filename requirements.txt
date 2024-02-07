@@ -1,17 +1,20 @@
-# The OpenAI Python client library, used for integrating with OpenAI's API for AI-related tasks. Install the latest version from PyPI.
+# The OpenAI Python client library, used for integrating with OpenAI's API for AI-related tasks.
 openai
 
-# This library is specifically for interacting with the Twitch API, enabling the creation of Twitch bots and other Twitch-related functionalities. Install the latest version from PyPI.
+# This library is specifically for interacting with the Twitch API, enabling the creation of Twitch bots and other Twitch-related functionalities.
 twitchio
 
-# The Natural Language Toolkit (NLTK) is used for natural language processing tasks, such as text analysis, tokenization, and parsing. Install the latest version from PyPI.
+# The Natural Language Toolkit (NLTK) is used for natural language processing tasks, such as text analysis, tokenization, and parsing.
 nltk
 
-# An asynchronous HTTP client/server framework in Python, useful for making non-blocking HTTP requests. Install the latest version from PyPI.
+# An asynchronous HTTP client/server framework in Python, useful for making non-blocking HTTP requests.
 aiohttp
 
-# PyAudio is used for audio input and output in Python, enabling the bot to capture and play audio. Note: Installing PyAudio on Windows might require additional steps. Install the latest version from PyPI.
+# PyAudio is used for audio input and output in Python, enabling the bot to capture and play audio.
 pyaudio
 
-# The client library for Google Cloud Speech-to-Text API, allowing for the conversion of audio to text via Google's cloud-based speech recognition technology. Install the latest version from PyPI.
-google-cloud-speech
+# A library for numerical computations, often used in data analysis, simulations, and machine learning tasks.
+numpy
+
+# Whisper library, potentially used for speech recognition or audio processing tasks.
+whisper
