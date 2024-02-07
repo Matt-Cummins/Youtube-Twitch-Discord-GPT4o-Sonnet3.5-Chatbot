@@ -10,6 +10,9 @@ from nltk.tree import Tree
 import xml.etree.ElementTree as ET
 import asyncio
 import requests
+import pyaudio
+import numpy as np
+from whisper import transcribe
 
 # Set up logging
 logging.basicConfig(level=logging.INFO, format='[%(asctime)s] %(levelname)-8s %(name)-12s %(message)s')
@@ -177,3 +180,4 @@ async def main():
 # Run the main function
 if __name__ == "__main__":
     asyncio.run(main())
+
