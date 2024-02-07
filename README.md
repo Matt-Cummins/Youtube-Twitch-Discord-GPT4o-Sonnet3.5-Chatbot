@@ -7,6 +7,10 @@ Natural Language Processing (NLP);
 
 The script utilizes the OpenAI API to generate responses based on conversation history and initial prompts. This allows it to understand and process human language, making it suitable for applications that require interaction with users in natural language.
 
+Audio Processing and Transcription;
+
+With imports like pyaudio, numpy, and whisper, the script hints at capabilities for audio processing and transcription, to transcribe spoken words into text for processing or responding to audio inputs. However, the detailed implementation or usage of these functionalities isn't yet fully implemented.
+
 Asynchronous Web Searches;
 
 It can perform web searches using the Google Custom Search API asynchronously. This means it can handle multiple search requests simultaneously without waiting for each one to finish before starting the next, leading to more efficient search operations.
