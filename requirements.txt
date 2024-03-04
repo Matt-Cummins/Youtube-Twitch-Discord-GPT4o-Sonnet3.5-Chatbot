@@ -1,20 +1,11 @@
-# The OpenAI Python client library, used for integrating with OpenAI's API for AI-related tasks.
-openai
-
-# This library is specifically for interacting with the Twitch API, enabling the creation of Twitch bots and other Twitch-related functionalities.
+discord.py
 twitchio
-
-# The Natural Language Toolkit (NLTK) is used for natural language processing tasks, such as text analysis, tokenization, and parsing.
 nltk
-
-# An asynchronous HTTP client/server framework in Python, useful for making non-blocking HTTP requests.
-aiohttp
-
-# PyAudio is used for audio input and output in Python, enabling the bot to capture and play audio.
 pyaudio
-
-# A library for numerical computations, often used in data analysis, simulations, and machine learning tasks.
 numpy
-
-# Whisper library, potentially used for speech recognition or audio processing tasks.
+requests
+openai
 whisper
+pypresence
+asyncio
+aiohttp
