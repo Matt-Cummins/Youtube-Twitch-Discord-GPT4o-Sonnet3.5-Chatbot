@@ -1,7 +1,7 @@
 # Twitch-Discord-GPT4-Bot
 This is unfinished!
 
-Twitch chatbot, OpenAI GPT4 integration, designed for flight simulation streamers.
+Twitch/Discord chatbot, OpenAI GPT4 integration, designed for flight simulation streamers.
 
 The Python script is designed to perform a variety of tasks, including natural language processing, asynchronous web searches, fetching METAR data, and operating a Twitch bot. Here's a basic breakdown of its capabilities:
 
