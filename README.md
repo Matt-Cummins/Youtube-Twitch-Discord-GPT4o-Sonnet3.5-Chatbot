@@ -1,4 +1,4 @@
-# twitchbot
+# Twitch-Discord-GPT4-Bot
 This is unfinished!
 
 Twitch chatbot, OpenAI GPT4 integration, designed for flight simulation streamers.
