@@ -15,7 +15,7 @@ A YouTube bot that interacts with the YouTube API to perform various tasks and p
 ## Installation
 
 1. Clone the repository:
-git clone https://github.com/your-username/your-repo.git
+git clone [(https://github.com/Matt-Cummins/Twitch-Discord-GPT4-Bot/blob/main/README.md)]
 
 
 Copy code
