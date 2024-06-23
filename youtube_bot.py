@@ -512,3 +512,9 @@ async def run_youtube_bot():
         except Exception as e:
             logging.error(f"Error in YouTube bot: {e}")
         await asyncio.sleep(5)  # Wait for 5 seconds before retrieving messages again
+
+            for message in messages:
+                await youtube_bot.handle_message(message['message'])
+        except Exception as e:
+            logging.error(f"Error in YouTube bot: {e}")
+        await asyncio.sleep(5)  # Wait for 5 seconds before retrieving messages again
