@@ -64,6 +64,11 @@ def get_continuous_chunks(text):
             if named_entity not in continuous_chunk:
                 continuous_chunk.append(named_entity)
             current_chunk = []
+    # Check if there's any remaining chunk at the end
+    if current_chunk:
+        named_entity = " ".join(current_chunk)
+        if named_entity not in continuous_chunk:
+            continuous_chunk.append(named_entity)
     return continuous_chunk
 
 def perform_web_search(query):
@@ -107,4 +112,4 @@ def format_search_results(results):
     if not results or 'items' not in results:
         return "I'm sorry, I couldn't find any results."
     snippets = [result['snippet'] for result in results['items'][:3]]
-    return "\\n".join(snippets)
+    return "\n".join(snippets)
