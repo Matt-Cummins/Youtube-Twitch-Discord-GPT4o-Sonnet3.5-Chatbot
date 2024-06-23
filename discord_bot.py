@@ -25,7 +25,7 @@ intents.message_content = True
 bot = commands.Bot(command_prefix='!', intents=intents)
 
 # Discord Rich Presence setup
-client_id = 'YOUR_CLIENT_ID'  # Replace with your Discord application's client ID
+client_id = Config.DISCORD_CLIENT_ID  # Replace with your Discord application's client ID
 RPC = Presence(client_id)
 RPC.connect()
 
@@ -246,6 +246,12 @@ async def tafs(ctx, airport_code: str):
     except Exception as e:
         logging.error(f"Error in tafs command: {e}")
         await ctx.send("An error occurred while processing the command.")
+
+async def run_discord_bot():
+    """
+    Run the Discord bot.
+    """
+    await bot.start(Config.DISCORD_BOT_TOKEN)
 
 async def run_discord_bot():
     """
