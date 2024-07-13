@@ -86,38 +86,55 @@ Here's a link for each item in your list:
 
 YOUTUBE_API_KEY:
 https://console.developers.google.com/apis/credentials
+
 YOUTUBE_ACCESS_TOKEN:
 https://developers.google.com/youtube/v3/guides/auth/server-side-web-apps
+
 YOUTUBE_LIVE_CHAT_ID:
 (This is obtained programmatically for each live stream)
+
 DISCORD_BOT_TOKEN:
 https://discord.com/developers/applications
+
 TWITCH_CLIENT_ID:
 https://dev.twitch.tv/console/apps
+
 TWITCH_CLIENT_SECRET:
 https://dev.twitch.tv/console/apps
+
 TWITCH_BOT_NAME:
 (This is the username you choose for your bot)
+
 TWITCH_BOT_TOKEN:
 https://twitchapps.com/tmi/
+
 TWITCH_CHANNEL_NAME:
 (This is your Twitch channel name)
+
 OPENAI_API_KEY:
 https://platform.openai.com/account/api-keys
+
 GOOGLE_PSE_ID:
 https://programmablesearchengine.google.com/cse/all
+
 GOOGLE_PSE_API_KEY:
 https://console.cloud.google.com/apis/credentials
+
 AVWX_API_KEY:
 https://avwx.rest/
+
 ICAO_API_KEY:
 https://www.icao.int/safety/iStars/Pages/API-Data-Service.aspx
+
 RAPIDAPI_KEY:
 https://rapidapi.com/
+
 OPENWEATHERMAP_API_KEY:
 https://openweathermap.org/api
+
 AVIATION_EDGE_API_KEY:
 https://aviation-edge.com/
+
 NAVIGRAPH_API_KEY:
 https://navigraph.com/products/navigraph-apis
 
